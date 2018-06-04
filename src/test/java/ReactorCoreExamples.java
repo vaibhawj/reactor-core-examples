@@ -3,6 +3,7 @@ import reactor.core.publisher.ConnectableFlux;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import reactor.test.StepVerifier;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -97,6 +98,18 @@ public class ReactorCoreExamples {
         flux.subscribe(o -> System.out.println("Sub2 : " + o));
 
         Thread.sleep(5000);
+
+    }
+
+    @Test
+    public void stepVerifier() {
+        Flux<String> flux = Flux.just("foo", "bar");
+
+        StepVerifier.create(flux)
+                .expectNext("foo")
+                .expectNext("bar")
+                .expectComplete()
+                .verify();
 
     }
 }
