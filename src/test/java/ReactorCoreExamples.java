@@ -7,6 +7,7 @@ import reactor.core.scheduler.Schedulers;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ReactorCoreExamples {
 
@@ -47,7 +48,10 @@ public class ReactorCoreExamples {
                 .zipWith(Flux.range(1, 26), (s, count) -> String.format("%d. %s", count, s))
                 .delayMillis(1000);
 
-        letters.buffer(Duration.ofMillis(2000)).subscribe(System.out::println);
+        letters
+                .buffer(Duration.ofMillis(2000))
+//                .sample(Duration.ofSeconds(2))
+                .subscribe(System.out::println);
         Thread.sleep(27000);
     }
 
@@ -74,13 +78,13 @@ public class ReactorCoreExamples {
     public void connectableFlux() throws InterruptedException {
         ConnectableFlux<Object> flux = Flux.create(fluxSink -> {
 
-            while(true){
+            while (true) {
                 fluxSink.next(System.currentTimeMillis());
             }
         })
-        .subscribeOn(Schedulers.parallel())
-        .sample(Duration.ofSeconds(1))
-        .publish();
+                .subscribeOn(Schedulers.parallel())
+                .sample(Duration.ofSeconds(1))
+                .publish();
 //        .replay();
 
         System.out.println("Subscribing 1");
@@ -95,8 +99,4 @@ public class ReactorCoreExamples {
         Thread.sleep(5000);
 
     }
-
-    // TODO: backpressure, throttling
-
-
 }
